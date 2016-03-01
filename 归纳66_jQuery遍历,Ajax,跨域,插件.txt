@@ -1,0 +1,130 @@
+一、each方法
+主要功能：实现对jQuery对象进行遍历操作，基本语法：
+jQuery对象.each(callback) ：each方法只有一个参数callback，形式如下：
+function callback(i,item){}
+参数说明：
+i：每次遍历时，系统会将遍历的索引下标放入变量i中
+item：每次遍历时，系统会将遍历的结果（DOM对象）放入item选项中，由于jQuery对象是DOM对象的集合，所以得到的item选项也是一个DOM对象
+
+例1：实现对网页中的div元素进行遍历操作
+例2：实现对网页中的img标签循环赋值操作
+
+二、jQuery中的Ajax
+	回顾原生Ajax代码：(post请求)
+	① 创建Ajax对象
+	② 设置回调函数
+	③ 初始化Ajax对象
+	④ 设置请求头信息 Content-type,application/x-www-form-urlencoded
+	⑤ 发送Ajax请求
+	⑥ 判断与执行 xhr.readyState==4 && xhr.status==200
+
+在jQuery中，封装了两种方式提供了对Ajax的支持：
+1、Ajax底层实现
+jQuery.ajax(options) 或 $.ajax(options) 
+	这个方法只有一个options参数，要求是一个json格式的数据
+options常用参数解析：
+	async ：是否异步，true：异步，false：同步，默认为true
+	cache ：是否缓存，（IE下的get请求才有缓存问题），true：缓存，false不缓存，默认为true
+	complete	：当Ajax的状态码为4时所触发的回调函数
+	contentType ：设置请求头
+	data		：发送Ajax时所传递的参数，要求是一个字符串格式的数据
+	dataType	：期待的返回值类型，text/xml/json
+	success		：当Ajax状态码为4且响应状态码为200时所触发的回调函数
+	type		：发送的http请求类型，get/post
+	url			：请求的url地址
+
+	那么如何解决Ajax的缓存问题呢？答：可以通过cache属性对其进行设置：
+	ajax底层实现是通过时间戳的形式解决缓存问题。
+	例2：模拟ajax中的post请求
+	例3：设置期待的返回值类型（xml/json）
+	【XML发送与解析】：
+	demo03_3_1.php
+	【JSON发送与解析】
+	demo03_3_2.php
+
+2、Ajax高级实现
+	发送Ajax中的get请求:jQuery.get(url,[data],[callback],type) 或 $.get(url,[data],[callback],type) 
+	发送Ajax中的post请求:jQuery.post(url,[data],[callback],type) 或 $.post(url,[data],[callback],type)
+	参数说明：
+	url：请求的url地址
+	data：发送Ajax请求时传递的参数，要求是一个字符串或json格式的数据
+	callback：当Ajax状态码为4且响应状态码为200时，所触发的回调程序
+	type：期待的返回值类型，text/xml/json，默认就是text
+
+
+三、Ajax中的跨域请求
+
+1、什么是跨域请求
+Ajax技术由于受到浏览器的限制，该方法不允许跨域通信
+主要原因：
+同源策略阻止从一个域上加载的脚本获取或操作另一个域上的文档属性。也就是说，受到请求的 URL 的域必须与当前 Web 页面的域相同。这意味着浏览器隔离来自不同源的内容，以防止它们之间的操作。
+
+面试题：Ajax为什么不能实现跨域请求？
+答：出于安全性考虑，默认情况下，浏览器中的同源策略不允许我们向另外一个域发送请求。
+
+2、如何解决跨域请求呢？
+在实际项目开发中，可能需要使用Ajax中跨域请求，
+1）如公司的内部系统想进行交互：
+ERP：http://erp.itcast.cn 
+OA：http://oa.itcast.cn
+想通过Ajax实现数据共享，默认情况下是不允许。
+2）如移动端APP开发也要进行跨域：
+手机iPhone：手机APP(2/3/4G)
+服务端PHP
+3、解决跨域问题
+我们实现跨域的最根本目的，就是获取服务端数据。所以我们可以借助于script标签中的src属性，其是可以跨域的。
+以上程序虽然实现了跨域问题，但是当页面一载入完毕后，系统就会发送请求获取结果，很不灵活，如何解决这个问题呢？
+
+4、jsonp技术
+JSONP是一个非官方的协议，它允许在服务器端集成script tags返回至客户端，通过javascript callback的形式实现跨域访问。
+
+面试题：请说明json与jsonp的区别？
+答：json是一种通用的数据传输格式，主要实现数据的传输与存储。
+	jsonp是一种非官方协议，主要用于解决Ajax跨域请求问题。
+
+5、使用jsonp技术+json技术完成大批量数据的传输与存储
+
+6、jQuery中的三个方法
+在实际项目开发中，虽然可以通过jsonp技术来实现跨域请求，但是过于麻烦，在jQuery中，可以通过如下三个方法来解决跨域请求问题。
+1）$.ajax
+2）$.get
+3）$.getJSON
+
+所有的跨域请求都是基于get方法实现的，jQuery只是在客户端定义了以上三个方法，但是服务器端是没有任何改变的，谨记！！！
+
+1) $.ajax方法如下：
+2) $.get方法实现跨域请求
+3) $.getJSON方法实现跨域请求
+	$.getJSON()基本语法：
+		$.getJSON(url,data,callback);
+参数说明：
+url：请求的url地址
+data：发送Ajax请求时所传递的参数，要求是一个字符串或json格式的数据
+callback：当Ajax状态码为4且响应状态码为200时所触发的回调函数
+
+四、综合案例：天气预报功能
+	1、设计HTML界面
+	2、设计数据库
+	请各位小伙伴，通过所学的技术把Excel中的所有数据导入到数据中！
+	3、导入数据到数据库
+	4、编写Ajax请求
+	1）获取城市的相关信息get.php
+	2）编写Ajax实现获取城市信息
+	3）编写Ajax实时获取天气预报相关信息
+
+五、那些年涛哥追过的插件
+	1、Query旋转插件rotate
+	2、Lightbox遮罩层
+	3、openflashchart（2007年…）统计图
+	4、Validform表单验证（国人开发）
+	5、多文件上传（国人开发/基于flash开发的多文件上传）
+	6、瀑布流插件
+	7、LazyLoad插件（延时加载）
+	8、单屏滚动（整个网站只有一个页面）Fullpage.js插件
+
+六、作业
+1、jQuery中的rotate插件编写一个大转盘
+2、注册一个百度的BAE云平台、SAE云平台
+http://bce.baidu.com/product/bae.html（实名认证）
+
+

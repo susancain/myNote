@@ -1,0 +1,285 @@
+	having子句
+		having主要针对是group by操作: 凡是group by的操作结果(统计函数),where都不能用,但是having能用.
+		几乎所有where能做的事情,having都可以做.
+	order by子句
+		order by: 对字段进行排序
+		order by 字段 [asc|desc]; -- asc默认升序, desc是降序
+		降序: NULL永远按照最小的数据进行运算
+		多字段排序: order by 字段1 [asc|desc], 字段2 [asc|desc]...;
+	limit子句	limit: 限制记录数
+		用法1: 限制数量: limit 记录数
+		用法2: 限制数据同时限制起始位置: limit offset,length
+		offset: 起始位置: 从查询出的多条数据中的某一条位置开始(默认第一条记录是0)
+		length: 长度,从起始位置开始向后获取指定长度的记录数(如果不够不影响)
+		使用最多的地方就是分页: 每页显示的数据量是固定长度(length是固定)
+		length = 2;
+		offset = (Page - 1) * length
+		page = 1,2,3
+
+		总页数 = ceil(总记录数 / 每页显示数量)
+联合查询
+	select语句 union [union选项] select语句 ...; -- 可以有多个union
+		union选项
+			all: 保留所有的记录
+			distinct: 去重(默认)
+	解决方案: 按照需求解决
+	select * from student where c_id = 1 order by age
+	union 
+	select * from student where c_id = 2 order by age desc;
+	解决1: 要在union中使用order by必须将select语句进行括号包裹: ()
+	解决2: 若要order by生效,必须配合limit语句
+连接查询分类: 
+	内连接, 外连接, 交叉连接和自然连接
+	交叉连接: cross join: 左表的记录与右边的记录进行连接之后,全部保留: 导致的结果是: 
+		记录数 = 左表记录数 * 右表记录数
+		字段数: = 左表字段数 + 右表字段数
+		交叉连接的结果: 笛卡尔积(尽量避免)
+		交叉连接的存在的意义: 因为要保证结构的完整性	
+	内连接: inner join
+		从左表的每一条记录去匹配右边的每一条记录: 
+			但是只有条件满足的情况下记录才会被保留, 否则不保留.
+		基本语法: 
+			左表 [inner] join 右表 on 左表.字段 = 右表.字段;
+			如果内连接不使用on条件: 没有条件就会变成交叉连接(笛卡尔积)
+			内连接可以使用where代替on
+			连接查询中可能因为每个都有同名字段: 查询结果中会同名: 
+				通常需要对字段使用别名(为了简便,还会对表使用别名);	
+	外连接: outer join
+		与内连接相似, 从左表(主表)找出每一条记录与右表(从表)中的每一条记录进行匹配:
+		匹配成功则保留, 匹配不成功也保留(从表对应的字段全部置空)
+		外连接分为两种: 左外连接(left join)和右外连接(right join)
+			左右外连接: 左表或者右表是主表(外连接记录数肯定不会少于主表记录数)
+				左外连接: left join
+				右外连接: right join
+				右连接转换成左连接
+		不管是左连接还是右连接: 左表的数据字段一定在左边,右表的在右边
+	自然连接包含自然内连接和自然外连接
+		自然内连接
+			左表 natural join 右表;
+			自然连接匹配字段之后会自动合并字段
+		自然外连接
+			左表 natural left/right join 右表;
+			内连接和外连接完全可以模拟自然连接: 使用关键字using作为连接条件
+			左表 inner join 右边 using(字段列表); -- 字段列表就是两张表的同名字段
+			多表连接: A join B on 条件 left join C on 条件...
+子查询分类
+	位置分类
+		From子查询: 子查询语句跟在from之后
+		Where子查询: 子查询在where条件内部
+		Exists子查询: 子查询出现在exists里面
+	子查询返回结果分类
+		标量子查询: 子查询返回的结果是一行一列
+		列子查询: 子查询返回的结果是一列多行
+		行子查询: 子查询返回的结果是一行多列(多行)
+		表子查询: 子查询返回的结果是多行多列
+
+视图: view,有表结构,没有数据, 数据来源基表
+	创建视图
+		视图是一种结构: create
+		create view 视图名字 as select语句; 
+		-- 视图的本质是一条查询语句(查询语句中的数据源(基表))
+	视图根据基表的数量分为两种
+		单表视图: 基表只有一个
+		多表视图: 基表至少两个以上
+	查看视图
+		视图是虚拟表: 有类似的表结构: 凡是表的查看结构所能用的都可以用在视图上面
+		1.像表一样查看: show tables
+		2.查看视图结构: desc 视图名字;
+		3.查看创建语句
+		4.还可以使用view关键字
+	修改视图
+		视图的修改与创建类似: 视图结构是从其他表获取过来: 修改的是视图的获取方式.
+		alter view 视图名 as 新的select语句;
+	删除视图
+		drop view 视图名字;
+
+	使用视图
+	视图的使用: 与表一样的使用(主要用于查询数据)
+	视图自身没有数据: 所有的数据来源都是基于原视图内部的查询语句.
+
+	视图数据操作
+		通过视图进行数据的写操作(增删改)
+		1.多表视图(基表来源两个以上)不能插入数据, 也不能删除数据: 但是可以修改数据
+		修改数据: 本身就是对基表进行操作
+		2.单表视图操作: 可以进行增删改, 但是要实现新增: 前提是视图必须包含基表的所有不能为空的字段
+		插入数据: 视图包含所有基表不为空的字段
+		插入数据: 视图不包含全部的基表不为空的字段
+		几乎不可能通过视图对表进行数据新增操作
+	视图更新限制: with check option
+	视图算法有三种:
+	undefined: 
+		未定义的,默认的: 但是该算法不是真正算法: 
+		真正的执行算法只有temptable和merge: 
+		undefined是指交给系统自动选择(系统优先选择merge: 效率高)
+	temptable: 
+		临时表,表示视图对应的select语句单独执行(先)
+	merge:
+		合并算法: 表示视图的对应的select语句不是单独执行, 而是与外部的select语句先进行合并, 后进行执行.
+视图: create view v1 as select语句;
+查询视图: select * from v1; -- select * from (select 语句) 别名;
+视图意义
+	1.简化了SQL语句: 提升网络间的传输效率
+	2.视图的存在: 主要是为了对外提供数据支持(外部系统)
+	a)隐藏基表字段(隐私)
+	b)保证了数据库的数据安全(保护数据库内部的数据结构)
+	c)可以灵活的控制对外的数据: 保证针对每个接口都有一个单独的数据支持: 增强了用户友好性.
+	3.视图利于权限控制: 有助于数据库对权限进行管理.
+备份
+	文件备份: 
+		数据量很大
+	单表数据备份
+		基本语法: 前提是外部文件不能存在(必须是自己创建)
+		select 字段列表/* into outfile 文件路径 from 表名 [where条件]; 
+		以上备份方式都是按照默认的方式进行处理: 可以自动选择处理方式
+		select 字段列表/* into outfile 文件路径 [字段处理] [行处理] from 表名 [where条件]; 
+		字段处理: fields
+			terminated by: 以什么结尾, 默认是”\t”
+			enclosed by: 以什么进行包裹, 默认是””, 没有包裹
+			escaped by:特殊字符用什么方式转义, 默认是”\\”
+		行处理: lines
+			starting by: 每行以什么开头,默认是””
+			terminated by: 行以什么结尾, 默认是”\r\n”
+		还原: 从文件中将数据取出塞到表里面
+		load data infile 文件路径 into table 表名[(字段列表)] [字段处理] [行处理];
+	SQL备份: 
+		将数据表以及数据都通过sql语句进行备份: 以后不管表存不存在都可以进行还原.
+		SQL备份不是通过mysql客户端内部执行SQL指令: 通过mysqldump.exe备份客户端
+		备份
+			Mysqldump.exe 连接认证(hPup) 数据库 [数据表1 数据表2...] > 外部备份文件所在路径(.sql)
+			单表备份
+			多表备份: 表与表之间使用空格分隔
+			整库备份: 指定数据库名字即可
+		还原
+			可以将备份的SQL语句复制全部,进入到mysql数据库之后执行即可.
+			还原操作1: 使用mysql客户端进行还原
+			mysql -hPup 数据库 < sql备份文件
+			还原操作2: 通过SQL指令实现
+			source sql文件;
+			以上几种方式备份都比较浪费空间(尤其是SQL备份)
+	增量备份
+		只对改变的东西进行备份: 是针对mysql的系统日志进行备份,指定备份的起始点到终点
+
+
+
+
+-- having条件判断
+select * from student where age > 30;
+select * from student having age > 30;
+-- count()统计函数只能在group by之后使用
+select count(*) from student group by c_id having count(*)>2;
+-- 字段别名
+select age as a,number from student having a>30;--别名后只能用having,不能用where、
+-- order by排序
+select * from student order by age;--升序,默认
+select * from student order by age desc;-- 降序
+-- 多字段排序
+select * from student order by gender asc,height desc;　
+-- 查询学生：年龄较大的两个学生
+select * from student order by age limit 2;
+-- 查询学生：指定起始位置和长度
+select * from student order by age limit 0,2;
+select * from student order by age limit 2,2;
+-- 联合查询
+select * from student union select * from student;-- 默认去重
+select * from student union distinct select * from student;-- 去重
+select * from student union all select * from student;-- 保留所有
+-- union使用order by必须配合limit
+(select * from student where id=1 order by age desc limit 9999999)
+union
+(select * from student where id=2 order by age limit 9999999);
+-- 多表联合查询(只需字段数相同)
+select name,number,age from student union select * from class;
+连接查询
+-- 交叉连接
+select * from student cross join class;
+-- 内连接
+-- 左右表无重复字段:字段连接不需带表名;
+-- 左右表有重复字段,且作为条件: 必须指定表名
+select * from student inner join class on student.c_id=class.id;
+select * from student inner join class on c_id=class.id;
+--内连接可以使用where代替on
+select * from student inner join class where c_id=class.id;
+select s.*,c_id class_id,c.name as c_name,c.room from student as s inner join class as c where s.c_id=c.id;
+-- 左外连接: 左连接
+select * from student s left join class c on s.c_id=c.id;
+-- 右连接
+select * from student s right join class c on s.c_id=c.id;
+-- 右连接转换成左连接
+select * from class c left join student s on s.c_id=c.id;
+-- 自然内连接
+select * from student s natural join class c;
+-- 自然外连接
+select * from student natural left join class c;
+-- using关键字模拟自然连接
+select * from studnet join class using(id);
+
+-- 标量子查询: 查询PHP0710班的所有学生
+select * from student where c_id=(select id from class where c_name='php0710');
+-- 列子查询: 查询所有在班的学生
+select * from student where c_id=(select id from class);
+-- 行子查询: 找出年龄最大且身高最高的学生
+select * from student where (age,height)=(select max(age),max(height) from student);
+-- 使用标量子查询
+select * from studnet where age=(select max(age) from student) and height=(select max(height) from student);
+-- 表子查询: 查询每个班中年龄最大的一个学生
+select * from (select * from student order by age) as s where 1 group by c_id;
+-- exists子查询
+select * from student where exists(select * from student join class on student.c_id=class.id);
+select * from student where exists(select * from student natural join class);
+
+-- 创建视图
+create view student_v1 as select * from studnt;
+create view student_v2 as select name,age,gender,c_id from student;-- number不为空字段不存在
+-- 创建多表视图
+create view student_v2 as select s.*,c.name c_name,c.room from student s left join class c on s.c_id=c.id;
+-- 查看视图(使用表查看方式)
+show tables;
+-- 查看视图结构
+desc student_v1;
+-- 查看创建语句
+show create table student_v1;
+show create view student_v1;
+-- 多表视图不能插入数据, 也不能删除数据: 但是可以修改数据
+alter view student_v1 as select number,name,age,height,c_id,gender from student;
+-- 单表视图插入数据
+-- 单表视图操作实现新增: 前提是视图必须包含基表的所有不能为空的字段
+insert into student_v1 values(null,'itcast0008','Mike',5,23,178,2);
+-- 删除视图
+drop view student_v1;
+-- 修改数据
+update student_class_v1 set age 24 where id=8;
+-- 限制更新
+-- 表示都是年龄大于20: 修改数据时,不能将大于20的变成小于20(with check option)
+create view student_v3 as select * from student where age>20 with check option;
+-- 通过视图v3修改年龄小于20
+update student_v3 set age=19 where id=10;-- error
+
+-- 创建视图指定算法
+create algorithm=merge view student_v4 as select * from student order by age desc;
+create algorithm=temptable view student_v5 as select * from student order by age desc;
+-- 查询数据
+select * from student_v4 group by c_id;
+<==>select * from student group by c_id order by age desc;
+select * from student_v5 group by c_id;
+
+-- 单表数据备份
+select * into outfile 'D:/server/temp/student.txt' from student;
+
+-- 单表数据备份: 指定处理方式
+select * into outfile 'D:/server/temp/student.txt'
+-- 字段处理
+fields terminated by '-' enclosed by '"'
+-- 行处理
+lines starting by 'BIGIN:'
+from class;
+
+-- 单表数据还原
+load data infile 'D:/server/temp/class.txt'
+into table class
+-- 字段处理
+fields terminated by '-' enclosed by '"'
+-- 行处理
+lines starting by 'BEGIN:';
+
+-- source命名还原SQL备份数据
+source D:/server/temp/student.sql

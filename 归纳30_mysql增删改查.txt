@@ -1,0 +1,116 @@
+设置字符集: 脚本/客户端
+set names gbk;
+库操作
+	create database 数据库名字 [库选项];
+	drop database 数据库名字;	
+	alter database 原数据库名 新的字符集 新的校对集;
+	show databases;
+	show databases like 'php%';	
+	show databases like '_hp0710';	
+	show create database 数据库名;
+表操作
+create table 表名(
+-- 所有的字段必须要有字段类型: 限制数据的格式
+字段名 字段类型(数据类型),
+字段名 字段类型	-- 最后一个不需要逗号分隔
+) [表选项];
+表选项: 增加表的限制
+字符集: charset 具体字符集
+校对集: collate 具体校对集
+存储引擎: engine 具体存储引擎(innodb默认的和myisam)
+
+方案1: 显示的指定数据库: 在表名之前增加要指定的数据库名字.表名
+create table php0710.user(
+	id int unsigned not null primary key auto_increment,
+	username varchar(32) not null,
+	password varchar(32) not null,
+	truename varchar(32) not null,
+	department varchar(32) not null,
+	rights varchar(32) not null
+)charset utf8;
+方案2: 隐式的指定数据库: 首先进入到数据库环境: use 数据库名字;
+use php0710;
+create table user(
+	id int unsigned not null primary key auto_increment,
+	username varchar(32) not null,
+	password varchar(32) not null,
+	truename varchar(32) not null,
+	department varchar(32) not null,
+	rights varchar(32) not null
+)charset utf8;
+方案3: 从已有表可以直接创建表(获取结构)
+create table 表名 like 数据库.表名; 
+create table user1 like php0710.user;
+删除数据表
+	 drop table 表名1[,表名2...];
+
+维护表: 表名和表选项
+	修改表名: 
+		rename table 旧表名 to 新表名;
+		rename table user to user1;
+	修改表选项: 字符集,校对集或者存储引擎
+		alter table 表名 [charset 字符集] [collate 校对集] [engine = 存储引擎];
+		alter table user charset utf8;
+
+字段的增删改
+alter table 表名 add/drop/change/modify 字段 字段类型 [位置];
+位置分为两种: first和after 字段名
+	增加字段
+		alter table 表名 add 字段名 字段类型 [位置];
+		alter table user add truename varchar(16);	
+	删除字段
+		alter table 表名 drop 字段名;
+		alter table user drop truename;
+	修改字段: 字段名,字段数据类型
+		修改字段名: 
+			change 旧名字 新名字 字段类型 [位置];
+			alter table user change name truename varchar(16);
+		修改字段的数据类型: 
+			modify 字段名 字段类型 [位置];
+			alter table user modify truename varchar(16);
+数据操作
+	插入数据
+		全部字段   insert into 表名 values(值列表);
+		部分字段   insert into 表名(字段列表) values(值列表);
+	删除数据
+		delete from 表名 [where条件]; 
+	修改数据
+		update 表名 set 字段名=新的值[,字段名=新的值] [where条件];
+	查看数据
+		select 字段列表/* from 表名 where 条件判断;
+
+查看字符集
+	show charset;
+-- 修改服务端默认认为的客户端的字符集
+set character_set_client = GBK;
+
+-- 修改服务端认为的客户端所能解析的字符集
+set character_set_results = GBK;
+
+查看校对集
+	show collation;
+校对集分为三种
+	_bin: binary, 二进制比较, 区分大小写
+	_cs: case sensitive, 大小写敏感(区分大小写)
+	_ci: case insensitive,大小写不敏感(不区分大小写)
+-- 创建表
+create table t_case_bin(
+name char(1)
+)charset utf8 collate utf8_bin;
+
+create table t_case_ci(
+name char(1)
+)charset utf8 collate utf8_general_ci;
+
+insert into t_case_bin values('a'),('A'),('B'),('b');
+insert into t_case_ci values('a'),('A'),('B'),('b');
+
+-- 排序
+select * from t_case_ci order by name asc;
+select * from t_case_bin order by name asc;
+
+-- 校对集后期修改无效
+-- 创建myisam表
+create table t_myisam(
+id int
+)charset utf8 engine myisam;

@@ -1,0 +1,94 @@
+数组相关函数
+键名
+	key()
+元素值
+	current()
+	next()
+	prev()
+	end()
+	reset()
+索引数组
+	array_keys()
+	array_values()
+数据结构
+	栈: 先进后出
+	队列: 先进先出
+		array_shift() 左-
+		array_unshift() 左+
+		array_push() 右+
+		array_pop()	右-
+字符串数组函数
+	explode()
+	implode()
+	range():创建一个包含指定范围的元素的数组range(low,high,step)
+	shufflu():把数组中的元素按随机顺序重新排序
+表单传值
+	GET传值
+		1.在URL之后直接绑定数据
+		2.form表单
+	POST传值
+		form表单
+数据接收判断
+	isset($_POST['变量'])内容是否存在
+	empty('')内容是否为空 无法判断空格
+复选框提交数据
+	name的属性值+[]
+	in_array()
+文件上传
+	php.ini		file_uploads=On
+	php.ini		upload_tmp_dir="D:/server/temp"
+	form属性	enctype="multipart/form-data"
+接收文件的临时信息
+	$_FILES
+	文件名: name
+	临时路径:tmp_name
+	类型: type:  MIME类型
+	大小: size
+	错误代码: error
+move_uploaded_file(临时文件所在路径, 目标位置): 两个路径都必须带文件名
+
+
+//冒泡排序
+<?php
+	set_time_limit(0);	
+	$arr=array(9,8,7,6,5,4,3,2,1);
+	function bubble_sort($arr){
+		for($i=0,$len=count($arr);$i<$len;$i++){
+			for($j=0;$j<$len-1-$i;$j++){
+				if($arr[$j]>$arr[$j+1]){
+					$temp=$arr[$j];
+					$arr[$j]=$arr[$j+1];
+					$arr[$j+1]=$temp;
+				}
+			}
+		}
+		return $arr;
+	}
+
+	for($i=0;$i<100;$i++){
+		$rand[]=mt_rand(0,50000);
+	}
+	$res=bubble_sort($rand);
+	print_r($res);
+?>
+
+遍历文件夹及其子目录
+1.写一个函数: 遍历出当前指定文件夹内的所有文件: 文件夹使用蓝色,文件使用红色
+2.如果碰到的是文件夹: 应该调用一个能够遍历出一个文件夹下的所有文件的函数来执行
+
+<?php
+	function myScandir($dir){
+		$files=scandir($dir);
+		foreach($files as $file){
+			if(is_dir($dir.'/'.$file)){
+				echo '<font color="blue">'.$file.'</font><br/>';
+				if($file!='.'&&$file!='..'){
+					myScandir($dir.'/'.$file);
+				}
+			}else{
+				echo '<font color="red">'.$file.'</font><br/>';	
+			}
+		}
+	}
+	myScandir('../');
+?>

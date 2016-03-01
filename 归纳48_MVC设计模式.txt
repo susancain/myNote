@@ -1,0 +1,34 @@
+中级项目(二)
+一、项目准备	
+1、MVC概述	
+2、MVC原理图	
+3、项目初始化
+二、项目详解	
+1、通过Zend软件创建shop项目	
+2、编写index.php项目入口文件
+3、在Core目录下编写Think.class.php核心文件	
+4、编写项目初始化九大函数	
+5、通过run方法初始化Think框架	
+6、测试Think框架	
+三、控制器编写与模板载入	
+1、什么是控制器	
+2、控制器的定义规则	
+3、PublicController.class.php后台模块定义
+4、载入模板功能	
+5、复制资源文件（images、css、js）到Public文件夹中	
+6、更改login.html模板中的路径信息（images、css、js）	
+7、在PublicController.class.php文件中的login方法载入login模板	
+8、显示验证码	
+
+MVC设计模式
+Controller : 控制器（大堂经理）、接收用户的请求，处理业务逻辑
+Model : 模型（大厨）、根据控制器决定是否调用数据（与MySQL数据库进行交互）
+View : 视图（用户显示界面）
+
+常见错误调试方法：
+	可以通过echo 字符串;exit;下一个断点，通过断点来判断是否在哪个位置出错
+	大小写错误与拼写错误
+	思路混乱
+	css与js中的路径是不能通过绝对路径引入的  /Public
+	配置没有复制到Config文件夹下就直接载入
+	以前开发中都是通过include语句进行代码载入，可以使用自动载入解决以上问题

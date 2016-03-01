@@ -1,0 +1,167 @@
+事务操作:一连串的操作: 要求要么全部成功,要么全部失败.
+	事务原理:操作不会立即同步数据表, 存储在事务日志文件
+	自动事务
+		自动提交: 系统在内部通过变量进行控制
+		show variables like 'autocommit';
+		关闭自动提交:
+		set autocommit = OFF;
+		commit: 提交, 将日志文件中的结果同步数据表
+		rollback: 回滚, 清空日志文件中的结果(没有同步)
+	手动事务
+		1.开启事务: 告诉系统以后的操作不要同步到数据表
+		start transaction;
+		2.事务操作: 就是对SQL指令进行执行
+		3.事务提交
+			a)提交数据: 同步到数据表: commit
+			b)回滚数据: 清空日志内容:rollback
+		设置回滚点: savepoint 回滚点名字;
+		回滚到回滚点: rollback to 回滚点名字;
+	事务特性
+		事务一共有四大特性: ACID
+			A: 原子性(Atomic). 事务是一个整体, 不可拆分: 要么都成功,要么都失败.
+			C: 一致性(Consistency). 在事务操作的前后,对应的数据会一次性改变
+			I: 隔离性(Isolation). 事务的操作是独立的, 不受影响.
+			D:持久性(Durability). 事务的操作,一旦提交,数据就会永久性的写入到数据表, 不能回滚
+	事务条件
+		应用
+		1.需要多个操作连贯完整(要么都成功,要么都失败)
+		2.事务的引用通常都是使用手动事务
+		事务条件
+		1.必须使用innodb存储引擎
+变量
+	系统变量	
+		是否自动提交: autocommit
+		自增长步长: auto_increment_increment
+
+		查看所有变量: show variables;
+		mysql中: 系统变量又分为了两类 
+			session变量(会话级别),global变量(全局级别)
+				show session variables;
+				show global variables;
+		修改系统变量
+			会话级别修改
+				set 变量名 = 值; 
+				set session 变量名 = 值;
+			全局级别修改
+				set global 变量名 = 值;
+				set @@global.变量名 = 值;
+
+	自定义变量
+		set @自定义变量名 = 值;
+		访问变量: select @变量名;
+		mysql中”=”通常是比较运算符,而不是赋值运算符(事实可以)
+		 赋值符号:  :=(冒号 + 等号)
+		mysql中,访问任意一个不存在的变量的值都是null
+
+	数据表获取变量
+		语法1: select @变量名 := 字段名... from 表名 where条件; 
+			-- 从表中取出对应的字段的值,赋值给变量
+		语法2: 专门从数据表中取出数据赋值给变量(不会显示数据)
+			select 字段名 from 表名 where条件 into @变量名
+	变量作用域
+		全局作用域: 结构之外(函数,触发器,存储过程)
+		局部作用域: 结构之内(函数,触发器,存储过程)
+		全局变量: 使用set关键字 + @变量名定义的变量都是全局变量(set @变量名)
+				全局变量在任何地方都可以使用
+		局部变量: 在结构内部定义的变量:使用declare声明
+
+触发器
+	创建触发器
+		触发时间: before和after
+		事件类型: insert, update 和delete
+		基本语法
+			delimiter 自定义语句结束符
+
+			create trigger 触发器名字 事件时间 事件类型 on 表名 for each row
+			begin -- 代表开始大括号{
+			-- 触发器的内部代码;
+			-- 每一条语句都得有语句结束符分号;要不然无法正常执行
+			end -- 代表结束大括号}
+
+			定义的语句结束符		
+			delimiter  ; -- 创建完触发器之后: 使用自定义的语句结束符结束,再修改回来
+	查看触发器
+		查看所有触发器或者部分触发器:
+		show triggers;--查看所有触发器
+		show trigger like 'pattern';
+		触发器存在于表中: information_schema.triggers
+		--查看触发器
+		select * from information_schema.triggers
+	使用触发器
+		触发器: after insert on t_order: 在订单被插入到数据表(t_order)的时候会自动触发.
+	删除触发器
+		触发器不能被修改,只能先删除,后增加.
+		drop trigger 触发器名字;
+	触发器记录
+		系统提供了两个关键字来保存模拟的结果: old和new
+		old: 代表的是数据要发生操作之前的结果: 插入操作没有old
+		new: 代表是数据要发生操作之后的结果: 删除操作没有new
+函数
+	系统函数
+		在mysql中所有的字符串操作单位基本都是字符
+		substring: 子字符串截取
+		char_length: 字符长度
+		length: 字节长度
+		instr: 在什么里面
+		lpad: 左填充: 将字符串填充到指定长度(字符数)
+		insert: 字符串替换
+		strcmp: 比较字符串
+		时间日期函数: now(), unix_timestamp()
+	自定义函数
+		定义语法
+		create Function 函数名([形参列表]) returns 返回值的数据类型
+		begin
+		-- 函数体
+		-- return 返回值
+		end
+	查看函数
+		查看函数创建: show create function 函数名;
+		查看所有函数: show function status  like 'pattern';
+	删除函数
+		drop function 函数名;
+	调用函数: select 函数名(参数列表);
+	函数参数
+		create function test(int_1 float ,int_2 int...)
+	函数返回值
+		函数内部(函数体) 的具体返回数据,必须与结构上指定的类型相同(returns)
+	函数体
+		局部变量: 在局部作用域定义的变量(结构内部)
+		declare 变量名 数据类型 [其他属性]; 
+		全局变量可以全局访问, 局部变量只能是函数内部访问.
+代码结构
+	分支结构
+		if语法
+		if 条件判断 then -- then表示如果满足条件
+		-- 满足条件所有执行的事情
+		else
+		-- 可以再使用if进行条件判断: 有多少个if,一定有多少个end if;
+		-- 不满足条件所有做的事情
+		end if;
+	循环结构
+		while循环
+		while 条件判断 do
+		-- 循环体
+		-- 循环条件变更
+		end while;
+
+存储过程: procedure也叫做过程,是一种没有返回值的函数
+	定义
+		create procedure 过程名([参数列表])
+		begin
+		-- 过程体: 与函数体一样
+		end
+		存储过程没有返回值, 如果想显示数据,在内部使用select
+	使用过程
+		过程没有返回值: select不能使用
+		调用过程: 有一个专门的关键字: call
+	维护过程
+		查看过程: 查看所有过程:show procedure status;
+		查看过程的创建语句: show create procedure 过程名;
+		存储过程不能修改,只能删除:drop procedure 过程名;
+	过程参数
+		in:	传进去, 外部(实参)将数据传递给存储过程内部使用(内部可以使用): 但是对外部变量没有影响(值传递)
+		out: 传出去, 外部只需要对内部提供一个变量名, 内部会自动事先清空变量 = null, 然后内部对变量进行操作, 最后反应到外部的变量身上.(会内部事先清空变量引用传递)
+		inout: 传进去又可以传出去(典型引用传值)
+		语法: create procedure 过程名(过程参数类型 参数名 数据类型,....)
+		out类型和inout类型都是类似引用传值: 意味着实参不能使用值常量,必须使用变量
+		全局变量没有访问限制: 过程内部可以访问全局变量

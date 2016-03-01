@@ -1,0 +1,90 @@
+匿名函数
+	$变量名 = function(参数列表){};
+	调用：$变量名(参数列表);
+	意义: 回调函数和闭包
+可变函数
+	应用: 回调函数
+伪类型
+	mixed: 混合的
+	number: 数值型
+	callback: 回调函数
+	void:空
+数据类型验证
+	is_bool: 判断布尔类型
+	is_float: 判断浮点型
+	is_integer: 判断整型
+	is_string: 字符串类型
+	is_object: 对象类型
+	is_array: 数组类型	
+	is_resource: 资源类型
+	is_null: 为空
+	is_scalar: 标量类型(整型,浮点型,布尔型和字符串型)
+	is_numeric: 数值型: 整型,浮点型和数值型字符串
+gettype: 获取数据的数据类型,返回的是字符串描述
+settype: 修改数据的数据类型,直接改变原数据类型
+数据类型转换
+	自动转换
+	强制转换
+		int: 整型
+		integer: 整型
+		bool: 布尔
+		boolean: 布尔
+		float: 浮点
+		string: 字符串
+		array: 数组
+		object: 对象
+文件包含
+	include和include_once
+	require和require_once
+向上包含(php)
+向下包含(html)
+路径
+	绝对路径
+		磁盘绝对路径
+		网络绝对路径
+	相对路径
+脚本终止
+	die;/die('提示信息');
+	exit; / exit('提示信息');
+	return;
+系统函数
+字符串函数
+	strlen
+	substr
+	strtolower
+	strtoupper
+	ucfirst
+	strrev
+	strpos
+	strrpos
+	strchr
+	strrchr
+	trim
+	str_repeat
+	str_replace
+时间日期函数
+	time: 获取当前时间的时间戳: 从格林威治时间开始的秒数
+	date: 将时间戳转换成指定格式的时间日期:格式符号
+	Y-m-d H:i:s
+	strtotime: 将合理的字符串变成时间戳
+数学函数
+	abs(); 绝对值
+	floor(); 向下取整: 取得比当前数值小的最大整数
+	ceil(); 向上取整: 取得比当前数值大的最小整数
+	round(): 四舍五入
+	rand(): 取得指定区间的随机数(整数)
+	mt_rand(): 与rand一样,比rand效率高
+数组
+	定义数组
+数组分类
+	索引数组
+	关联数组
+	混合数组
+访问数组元素 $数组变量[‘下标’];
+遍历数组
+	For循环遍历
+	Foreach遍历数组
+	Each函数
+数组运算
+	+运算
+	array_merge

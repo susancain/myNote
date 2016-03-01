@@ -1,0 +1,224 @@
+一、Javascript库介绍
+1、为什么需要Javascript库
+Javascript代码库主要是通过对Javascript源代码的封装来简化Javascript操作。
+3、Javascript库对比
+1）Prototype库2）Dojo库3）YUI库（Yahoo公司）4）ExtJS库5）Mootools库
+6）jQuery库，从2006年开发至今，成为最受欢迎的Javascript库。
+4、什么是jQuery库
+一款免费且开放源代码的JavaScript代码库
+5、部署jQuery库
+1）下载jQuery源代码 www.jquery.com
+2）下载jQuery1.8.3版本（官方最新版1.9或2.1）
+在jQuery1.9版本之后，官方明确指出不再支持IE浏览器
+3）下载后解压如下图所示：
+完整版jquery-1.8.3.
+精简版jquery-1.8.3.min.js
+4）复制jquery-1.8.3.js文件到项目的Javascript目录中并更名为jquery.js即可
+
+二、jQuery选择器
+在原生Javascript代码中，可以通过document.getElementById(id)来获取指定的元素
+在jQuery代码中，可以通过$符号+选择器来从几十个不同的角度来获取指定的元素
+基本
+层级
+简单
+内容
+可见性属性
+子元素
+表单
+表单对象属性
+1、基本选择器
+	#id ：通过元素的id属性来匹配元素
+	element ：通过的元素的名称来匹配元素
+	.class ：通过元素的class属性来匹配元素
+	selector1,selector2 ：群组选择器，多个条件之间是通过逗号隔开的
+2、层级选择器
+	ancetor  descendant ：匹配祖先元素下的所有后代元素
+	parent  >  child ： 匹配父元素下的所有子元素
+	prev  +  next ：	匹配上一个元素紧邻的下一个同级元素
+	prev  ~  siblings ：匹配上一个元素下面的所有同级元素
+3、简单选择器
+	:first ：匹配第一个元素
+	:last ：匹配最后一个元素
+	:even ：匹配所有的偶数
+	:odd ：匹配所有的奇数
+	:eq(index) ：匹配索引等于index的元素，默认索引从0开始
+	:gt(index) ：匹配大于index的元素
+	:lt(index) ：匹配小于index的元素
+	:not(selector) ：匹配除selector选择器以外的其他元素
+4、内容选择器
+	:contains(text) ：匹配内容包含text的元素
+	:empty ：匹配内容为空的元素
+	:has(selector) ：匹配具有指定选择器的元素（和not(selector)正好相反）
+	:parent ：匹配具有子元素的元素（匹配内容不为空的元素）
+5、可见性选择器
+	:hidden ：匹配所有隐藏元素，display:none或input type=’hidden’
+	:visible ：匹配所有可见元素
+6、属性选择器
+	[attribute] ：匹配具有指定属性的元素
+	[attribute=value] ：匹配属性值等于value的元素
+	[attribute!=value] ：匹配属性值不等于value的元素
+	[attribute^=value] ：匹配属性值以value开始的元素
+	[attribute$=value] ：匹配属性值以value结尾的元素
+	[attribute*=value] ：匹配属性值包含value的元素
+	[selector1][selector2][selectorN] ：匹配同时具有多个属性的元素
+7、子元素选择器
+	:nth-child(index/even/odd):匹配索引等于index/eve/odd的子元素，默认从1算起 
+	:first-child ：匹配第一个子元素
+	:last-child ：匹配最后一个子元素
+	:only-child ：如果当前元素是唯一的子元素，则匹配
+8、表单元素选择器
+	:input ：匹配所有表单元素，包括textarea与select下拉选框
+		:text 	：匹配所有的文本框
+	:password ：匹配所有的密码框
+		:radio	：匹配所有的单选按钮
+		:checkbox ：匹配所有的复选框
+		:submit ：匹配所有的提交按钮
+	:reset ：匹配所有的重置按钮
+	:image ：匹配所有的图像域（input type=’image’）
+	:button ：匹配所有的按钮（input type=’button’）
+	:file ：匹配所有的文件域
+		:hidden ：匹配所有隐藏表单
+
+	问题：在jQuery中，$(‘:input’)与$(‘input’)区别？
+	答：:input是匹配所有表单元素，包括了textarea与select下拉
+		input只能匹配以input开头的10种表单元素
+
+9、表单对象属性选择器
+	:enabled ：匹配所有可用的表单元素
+	:disabled ：匹配所有不可用的表单元素
+	:checked ：匹配所有选中的值
+	:selected ：匹配所有下拉选中的值
+
+	问题：在input表单元素中，readonly与disabled区别？
+	答：readonly可以通过http进行传值，但是disabled是没有办法传递的。
+
+三、DOM对象与jQuery对象
+1.DOM对象
+在Javascript代码中通过document.getElementById(id)获取的对象，我们就称之为DOM对象。
+在原生Javascript代码中，动态绑定的基本语法：
+DOM对象.事件 = 事件程序程序;
+2.jQuery对象
+在jQuery代码中通过$()符号获取的对象，我们就称之为jQuery对象。
+3.DOM对象与jQuery对象
+开启调试工具分别调试DOM对象与jQuery对象
+通过上图调试可知，DOM对象与jQuery对象肯定不是同一个对象，所以我们在事件绑定通过$()符号获取的是jQuery对象，其内部并没有onclick事件，所以不能直接弹出相关数据。
+4.DOM对象与jQuery对象之间的关系
+默认情况下，jQuery对象是无法调用DOM对象下的属性和方法，同理，DOM对象也是无法调用jQuery下的属性和方法的
+通过上图调试可知：
+我们的jQuery对象本质是一个数组,数组中的每个元素都是一个DOM对象，jQuery对象就是一个DOM对象的集合
+5.DOM对象与jQuery对象相互转化
+	1）jQuery对象转DOM对象：
+	DOM对象  =  jQuery对象[index];
+	或
+	DOM对象  =  jQuery对象.get(index);
+	2）DOM对象转jQuery对象
+	直接使用jQuery的$符号对其封装
+	jQuery对象  =  $(DOM对象);
+
+四、jQuery对象的常用属性
+1、基本属性
+	attr(name) ：获取指定元素的name属性
+	attr(key,value) ：设置元素的属性
+	attr(properties) ：一次为元素设置多个属性，要求参数是一个json格式的数据
+	attr(key,fn) ：通过一个函数的返回值设置元素的属性
+	removeAttr(name) ：移除元素的某个属性
+
+<font color=’#ff0000’ size=’4’>font元素</font>
+2、class属性
+	addClass(class) ：为某个元素添加class样式
+	removeClass(class) ：移除元素的某个class样式
+	toggleClass(class) ：切换样式，如果存在则移除样式，反之，则添加样式
+	hasClass(class) ：判断元素是否具有某个class样式
+
+<div class=’cls1’>div元素</div>
+3、css属性
+	css(name) ：获取元素的css属性
+	css(name,value) ：设置元素的css属性
+	css(properties) ：依次为元素设置多个css属性，要求参数是一个json格式的数据
+
+<div style=’width:400px; height:150px; background-color:#f00’></div>
+4、位置操作
+	offset() ：获取元素的位置，返回一个json格式的数据，包含了left与top属性
+	offset(coordinates) ：设置元素的位置，要求参数是一个json格式的数据，必须包含left与top两个属性
+5、尺寸操作
+	width() ：获取元素的宽度
+	width(value) ：设置元素的宽度
+	height() ：获取元素的高度
+	height(value) ：设置元素的高度
+6、文本/值操作
+	相当于源代码中的innerHTML属性
+	html() ：获取双标签元素的内容
+	html(val) ：设置双标签元素的内容
+
+	相当于源代码中的value属性
+	val() ：获取表单元素的内容
+	val(val) ：设置表单元素的内容
+
+	相当于源代码中的innerText属性
+	text() ：获取双标签元素的内容
+	text(val) ：设置双标签元素的内容
+
+
+
+说明：
+实际项目开发中：
+通常使用html来获取双标签的内容，而通过val方法来获取表单元素的内容。
+html标签和text标签对文本数据的获取效果是一致的，但是如果标签中又包含了子标签，那么通过html可以正常获取，但是使用text方法只能获取文本数据
+html标签设置的内容中如果包含了html标签，其可以正常解析
+text标签设置的内容中如果包含了html标签，其会作为普通文本直接输出
+五、jQuery中的事件编程
+1、页面载入
+在原生Javascript代码中，我们可以通过window.onload事件实现页面载入
+在jQuery代码中，可以通过ready方法实现页面载入，基本语法：
+① 第一种绑定方式：
+$(document).ready(function() {
+	//事件处理程序代码…
+});
+② 以上绑定还可以进一步简写为如下形式：
+③ 以上程序还可以进一步简写为如下形式：
+
+2、ready方法与window.onload有何区别？
+window.onload方法是等待页面中要操作的DOM对象以及所有的外部资源（images/css/js）完全加载完毕后，才开始执行Javascript脚本。
+ready方法只要当页面中需要操作的DOM对象加载完毕后，就开始执行Javascript脚本，可能外部资源还没有加载完毕。
+所以ready方法的执行速度要略快于window.onload方法
+通过以下程序，可以证明上面的结论：
+图像生成小故事：
+小明喜欢小美，想写一张情书
+1）准备一张纸
+2）上个美丽的颜色
+3）开始画画
+4）完毕后，转入信封，邮寄
+5）小美看了觉得很恶心，销毁了
+
+3、jQuery中的基本事件（方法）
+	blur(fn) ：当失去焦点时触发
+	change(fn) ：当状态改变时触发
+	click(fn) ：当单击时触发
+	dblclick(fn) ：当双击时触发
+	focus(fn) ：当获得焦点时触发
+	keydown(fn) ：当键盘按下时触发
+	keyup(fn) ：当键盘弹起时触发
+	keypress(fn) ：当键盘按下时触发
+	load(fn) ：功能与ready方法类似，页面载入后触发
+	unload(fn) ：页面关闭时触发
+	mousedown(fn) ：鼠标按下时触发
+	mouseup(fn) ：鼠标弹起时触发
+	mousemove(fn) ：当鼠标移动时触发
+	mouseover(fn) ：当鼠标悬浮时触发
+	mouseout(fn) ：当鼠标离开时触发
+	resize(fn) ：当窗口大小改变时触发
+	scroll(fn) ：当滚动条滚动时触发
+	select(fn) ：当文本框的文本选中时触发
+	submit(fn) ：当表单提交时触发
+
+4、jQuery的事件绑定
+在Javascript原生代码中，事件绑定一共有3种形式：
+1）行内绑定
+2）动态绑定
+3）事件监听
+那么在jQuery中，其事件绑定属于哪种形式呢，如何验证呢？
+为什么需要事件监听？
+我们可不可以为同一对象的同一事件绑定多个事件处理程序？
+
+运行以上代码，发现可以正常运行，所以可以得出结论：
+在jQuery中其事件绑定是通过事件监听完成的且调整了兼容性及事件的触发顺序。

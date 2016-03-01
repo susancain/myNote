@@ -1,0 +1,206 @@
+
+2、什么是Ajax
+•Asynchronous ：异步
+•JavaScript ：Javascript
+•And ：和
+•XML ：XML
+Ajax全称：异步的Javascript和XML
+3、Web技术
+客户端技术：
+•Html
+•Css
+•Javascript
+服务器端技术：
+•ASP(ASP.NET)
+•JSP
+•PHP
+4、Web传输模式
+1）同步模式
+填写表单数据提交服务端页面处理返回
+
+2）异步模式
+二、Ajax对象（3个方法5个属性）
+1、创建Ajax对象
+如果想使用Ajax必须有一个前提：首先要创建一个Ajax对象，但是由于Ajax属于客户端语言，所以其在不同浏览器下创建的方式也是不同的：
+
+基于IE内核的浏览器（低于IE8以下版本的IE浏览器）
+var  Ajax对象  =  new  ActiveXObject(‘Microsoft.XMLHTTP’);
+基于W3C内核的浏览器（火狐、谷歌、Opera、高版本（IE8以上版本）的IE浏览器）
+var  Ajax对象  =  new  XMLHtttpRequest();
+2、解决兼容性问题
+在IE内核的浏览器下可以通过window.navigator.userAgent.indexOf(‘MSIE’) > 0来识别是否为IE浏览器，但是在新版本中此功能会导致无法创建Ajax对象。
+
+使用jQuery源代码中的封装方式解决兼容性问题：
+① 创建一个public.js的公用js库
+② 封装dom对象获取函数
+③ 解决Ajax对象的兼容性问题
+
+3、Ajax对象下常用的方法
+open(method,url) ：初始化Ajax对象
+	method：要发送的http请求类型，get或post请求
+	url：要请求的url地址
+setRequestHeader(header,value) ：设置请求头信息
+	header：请求头
+	value：请求头信息
+send(content) ：发送Ajax请求
+	content：数据传输时发送的数据，content就是请求空白行的数据。
+	如果是get请求就是null，如果是post请求，就是其传递的值
+4、Ajax对象下常用的属性
+	onreadystatechange ：当Ajax状态码改变时所触发的回调函数
+	readyState ：Ajax状态码
+	0：表示对象已建立，但未初始化  var xhr = createXhr();
+	1：表示对象已初始化，但未发送  xhr.open(‘get’,’demo01’);
+	2：已调用send方法进行请求	  xhr.send(null);
+	3：正在接收数据（接收到一部分）
+	4：接收完成
+	status ：Ajax响应状态码，200（正常返回），404（未找到页面），302（缓存）
+	statusText ：响应状态文本
+	reponseText ：如果服务器端返回文本数据，则使用responseText进行接收
+	responseXML ：如果服务器端返回XML数据，则使用responseXML进行接收
+三、Ajax中的get请求
+1、Ajax中get请求五步走：
+① 创建Ajax对象
+② 设置回调函数（onreadystatechange）
+③ 初始化Ajax对象
+④ 发送Ajax对象
+⑤ 判断与执行
+2、HttpWatch使用说明：
+鼠标右键，选择HttpWatch
+1）单击Record进行捕获请求
+2）单击Summary概要，单击任意url地址，选择Stream文档里
+3）http请求三部分
+3、Ajax细节问题
+问题1：为什么在php服务端页面，我们是通过echo返回数据而不是通过return返回呢？
+答：我们使用Ajax时不是直接使用return进行返回，因为测试后发现，没有任何数据，主要原因如下：
+虽然在php中，echo与return都有返回的含义，但是两者还是有区别的，echo代表返回数据到浏览器端而return代表返回数据到当前服务器端脚本，由于Ajax是运行在客户端的，所以无法捕获return的返回值，所以弹出为空。
+
+问题2：如果Ajax请求一个不存在的页面会怎么样呢？
+答：通过测试发现，即使访问一个不存在的页面，系统依然可以正常弹出，效果如下图所示：
+
+在实际项目开发中，如果遇到了以上问题，大家可以通过如下方式进行解决：
+
+以上代码还可以进一步简写为如下形式：
+
+四、综合案例：验证注册用户名是否唯一
+1、定义html代码
+
+2、编写相关事件
+
+3、编写Ajax五步走
+
+4、编写服务器端页面
+
+运行效果：
+
+五、解决Ajax中的缓存问题
+1、为什么需要解决Ajax缓存
+例1：通过Ajax计算两个数的和（求和运算）
+① 设计html界面
+
+② 引入公用文件
+
+③ 定义页面载入事件与Ajax创建流程
+
+④ 创建php页面
+
+说明：以上程序在运行时是正常的，但是当我们更改demo05.php文件中的运算符时，在W3C浏览器下，数据可以及时更新，但是如果使用的是IE浏览器且发送的是GET请求，系统会自动缓存请求结果，当下次访问时，系统自动会调用缓存信息，这会造成数据更新不及时。
+
+2、Ajax缓存起源
+IE缓存设计初衷：
+在实际项目开发中，如果我们向同一url地址发送请求时，系统在第一次访问，会将请求的资源缓存到浏览器的客户端的缓存文件中，当下次继续向同一url地址发送请求时，如果请求资源没有变化，则直接调用缓存文件，这样可以加快网站的访问速度。
+
+3、缓存解决的4中方案
+1）通过随机数的形式解决缓存问题
+
+缺点：① 随机数会让我们每次请求的url地址都是不同的，但是由于缓存机制，其每次请求都会进行缓存，所以会在客户端会生成大量的缓存文件。
+	  ② 随机数也会重复的可能
+2）通过时间戳的形式来解决缓存问题
+
+
+缺点：由于每次请求的url地址都是不同的，所以其也会在客户端生成大量的缓存文件。
+3）通过资源文件的最后修改时间来解决缓存
+当我们向同一url发送请求时，系统在第一次请求时会生成缓存文件，第二次请求时，会在请求头信息中追加如下参数：
+
+If-Modified-Since：缓存资源文件的最后修改时间
+
+当我们第一次访问服务器时，系统会自动生成请求的资源文件，如右图所示，每个文件在生成时都有三个时间（创建时间、访问时间、最后修改时间），生成完成后，系统会将资源内容+文件的最后修改时间一起返回给客户端IE浏览器，当第二次向同一url发送请求时，系统会自动在请求头信息中携带资源文件的最后修改时间，如果一致，则认为资源文件没有任何改变，将告诉浏览器，不需要重新请求，调用自身缓存即可。
+
+在实际项目开发中，我们可以通过设置请求头来解决以上问题。
+
+以上方法可以解决缓存问题，同时只会在客户端生成一个缓存文件。
+4）在服务端禁止客户端进行缓存
+header("Cache-Control: no-cache, must-revalidate");
+真正含义：告诉浏览器不要对当前请求资源进行缓存
+
+以上方法不会生成任何缓存。
+六、Ajax中post请求
+1、回顾一下get请求与post请求区别
+在传值上：
+如果是get请求，其参数是追加url的尾部位置
+如果是post请求，其参数是追加请求空白行位置
+
+在安全性上：
+get请求相对于post请求，安全性较低
+
+在传值大小上：
+如果是get请求，最大能传递2kb
+如果是post请求，理论上是没有限制的，但是作为php程序员，服务端端一般会对其进行限制8M，在php程序中一般限定为2M
+
+在数据传输类型上：
+如果是get请求，只能传递字符型数据
+如果是post请求，可以传递字符型数据以及二进制数据
+
+在请求头上：
+如果是get请求
+
+如果是post请求
+
+通过以上对比，可以发现在post请求中比get请求多了一个请求头信息
+Content-type:application/x-www-form-urlencoded
+2、Ajax中的post请求六步走
+① 创建Ajax对象
+② 设置回调函数
+③ 初始化Ajax对象
+④ 设置请求头信息
+⑤ 发送Ajax请求
+⑥ 判断与执行
+
+例1：通过Ajax中的post请求获取服务端数据
+例2：通过Ajax中的post数据进行传值
+
+如果需要进行数据传递，可以把要传递的参数，放入send方法的参数中即可
+运行后发现，post请求并不存在缓存问题，缓存问题只在ie浏览器下的get请求中才会存在。
+问题：在发送post请求时，如果不设置请求头会产生什么结果呢？
+答：如果在发送post请求时，不填写请求头，那么服务器端将无法接收到任何数据
+
+3、通过Ajax完成无刷新录入功能
+
+七、Ajax中的XML
+1、什么是XML？
+答：XML全称可扩展标记语言，主要用于实现数据的传输与存储
+2、Ajax中的XML
+主要负责大批量数据的传输与存储
+3、XML中DOM模型
+<library>
+	<book>
+		<title>学习Ajax</title>
+		<price>99.80</price>
+	</book>
+</library>
+① 开辟内存空间，形成“面”
+② 载入xml文档到内存，形成DOM树（标准DOM树）
+
+4、Javascript中如何解析XML数据
+•var xml=xmlHttp.responseXML;
+•node=xml.getElementsByTagName(“TagName”);
+•node[0].childNodes[0].nodeValue;
+
+在Javascript提供了一个文本节点查询的相关属性childNodes，获取当前元素的所有子元素，在JavaScript常用于获取文本节点。
+5、Ajax中的XML应用
+例1：使用Ajax+XML返回两个数的四则运算
+① 设计html界面
+② 载入公用文件public.js
+③ 编写相关代码
+④ 编写php代码（demo08.php）
+
+例2：通过Ajax+XML获取产品列表

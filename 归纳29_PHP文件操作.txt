@@ -1,0 +1,66 @@
+文件夹操作(路径操作)
+	opendir(有效路径)
+	readdir(打开的路径资源)
+	closedir(打开的路径资源)
+	rewinddir(打开的文件资源): 将资源指针移动到首位
+	scandir(有效路径)
+路径操作
+	file_exists(): (路径和文件)
+	is_dir(): 判断路径
+	is_file(): 判断文件
+	mkdir()
+	rmdir()
+	getcwd()当前目录
+	chdir()修改目录
+	rename() 重命名
+
+PHP5文件操作
+读操作
+	file_get_contents(文件路径/url)		string类型
+	file()		行分离,返回数组
+写操作
+file_put_contents(文件路径,内容[,写入方式]);
+	FILE_USE_INCLUDE_PATH: 先将文件内容清空后追加(默认操作)
+	FILE_APPEND: 在文件内容后面追加
+
+PHP4操作: 以资源形式进行操作
+读取操作
+	1.获取文件资源
+		资源 fopen(文件路径,打开模式)
+			打开模式
+				'r'只读方式打开
+				'r+'读写方式打开
+				'w'写入方式打开
+				'w+'读写方式打开
+				'a'写入方式打开a:append
+				'a+'读写方式打开
+	2.读取内容
+		fgetc(资源)一个字符,指针下移
+		fgets(资源,len) 最多获取一行
+		fread(资源,len) 读取指定长度的数据
+	3.释放资源
+	fclose(文件资源)
+写操作
+	1.获取资源: fopen(路径,写模式(r+,w,w+,a,a+))
+		R模式不能打开一个不存在的文件
+		W模式可以创建一个不存在的文件:即便是文件存在,一定会清空文件
+	2.写入内容
+		fputs/fwrite(文件资源,要写入的内容):
+	3.W+模式可以读取数据
+		W+模式在写入内容之后,指针是在最末尾,如果直接读是读不到任何内容: 将指针移动
+	fseek(资源,位置)改变指针位置
+	4.关闭资源	fclose()
+
+文件操作相关函数
+	copy(原文件路径,新文件路径) 复制文件
+	unlink() 删除文件
+	filemtime()文件最后修改时间
+	filesize() 获取文件大小(字节单位)
+	fileperms: permission权限的意思,获取文件的操作权限(windows下).
+文件下载
+	A链接下载
+	PHP文件下载
+	1.告诉浏览器当前给的内容是流式文件(数据),不需要浏览器解析
+	header("Content-type: application/octet-stream");
+	2.告诉浏览器: 对内容拿到之后应该以附件形式进行处理,建议使用指定名字
+	header(“Content-Disposition: attachment; filename=建议的名字”);

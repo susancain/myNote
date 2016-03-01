@@ -1,0 +1,209 @@
+关联关系分为了三类: 一对一,一对多/多对一, 多对多
+第一范式: 数据字段必须具有原子性(不可再分)
+第二范式: 取消部分依赖.只是依赖复合主键的部分(某个字段) 
+第三范式: 取消传递依赖.通过非主键字段依赖主键的形式称之为传递依赖
+外键也称之为外键约束: foreign key
+外键: 外面的键, 一张表的一个字段(非主键)指向另外一个表的主键, 那么该字段就称之为外键.
+增加外键有两种形式
+方案1: 在创建表的时候就增加外键: 在表字段之后使用foreign key
+foreign key(外键字段) references 主表(主键);
+foreign key(c_id) references class(id)
+方案2: 在创建表之后增加外键: 指定外键名字
+alter table 表名 add constraint 外键名 foreign key(外键字段) references 父表(主键字段)
+alter table t_foreign add constraint class_foreign foreign key(c_id) references class(id);
+查看指定的外键名
+	show create table t_foreign;
+删除外键
+	外键不能被修改,只能先删除后新增.
+	alter table 表名 drop foreign key 外键名;
+
+	外键约束: 可以通过在建立外键的时候, 对外键进行约束控制.
+		约束控制有三种模式
+			严格模式: restrict(默认的)
+			置空模式: set null
+			级联模式: cascade
+		模式设定语法: 在外键增加之后(foreign key(外键字段) references 父表(主键)),增加on关键字, 指定操作方式和约束模式. 一个常用的约束模式如下
+			on update cascade	-- 级联操作: 父表更新,子表跟着变
+			on delete set null;  -- 父表删除, 子表置空 
+		外键要增加成功的前提条件
+			1.子表的外键字段的数据类型必须与父表的主键的字段类型要一致
+			2.如果想要在父表进行数据删除的时候, 子表对应的模式为置空: set null,前提是子表对应的外键字段允许为空
+			3.如果是在表创建之后增加外键: 一定要考虑表中的数据是否满足外键条件
+数据高级操作
+	新增数据
+		插入数据
+			全部字段   insert into 表名 values(值列表);
+			部分字段   insert into 表名(字段列表) values(值列表);
+		主键冲突和蠕虫复制.
+			主键冲突
+				主键冲突更新
+				insert into 表名 values(主键值,字段值) on duplicate key update 字段 = 字段值;
+				主键冲突替换
+				replace into 表名 values(主键值,字段值);
+			蠕虫复制: 数据成倍的增加
+				insert into 表名[(字段列表)] select */字段列表 from 表名;
+			作用1: create table like从已有表复制结构
+			作用2: 快速达到指数级,测试数据表的压力, 性能测试(使用索引提升性能).
+				必须剔除主键
+	修改数据
+		标准语句：update 表名 set 字段名 = 值 [where条件];
+		高级语句：update 表名 set 字段名 = 值 [where条件] [limit语句];
+		limit: 限制更新的记录数: limit 数字; 数字代表限制的记录数
+	删除数据
+		标准：delete from 表名 [where条件];
+		高级：delete from 表名 [where 条件] limit 记录数;
+		delete删除数据: 不会修改数据表的自增长和索引
+		自增长重置: truncate
+			truncate 表名; <先删除表(drop), 再创建(create)>
+	高级查询
+		标准:select */字段列表 from 表名 [where条件];
+		完整:select [select选项] */字段列表[字段别名] from 数据源 [where子句] [group by子句] [having子句] [order by子句] [limit子句];
+		select选项: 控制数据的重复性
+			all: 保存所有数据,重复的也无关(所有字段都重复), 默认的
+			distinct: 去重,去掉重复记录(所有字段都重复)
+字段别名
+	字段名 as 别名;	-- as关键字
+	字段名 别名;	-- as关键字可省略
+数据源:
+	from 表名;	
+	from 表名1,表名2...
+	笛卡尔积: 是一种无效连接操作, 没有意义: 应该尽量避免笛卡尔积出现.
+	来源不是表: 而是select语句产生的临时结果: 子查询
+	from (select语句) as 别名; -- from只认表: 必须给结果绑定一个表名
+where子句: 一种判断: where返回0或者1: 0代表false, 1代表true
+	where后面的条件才是最终的判断: 
+		比较运算: >, < ,>= , <= , !=, <>, =, in, between and
+		逻辑运算: and&&, or||, not
+		in操作: (附带逻辑运算)
+		between 左边数据 and右边数据: 操作
+			1.左边数据必须小于右边数据
+			2.左边数据和右边数据是闭区间
+	where原理: 从磁盘一条一条的取出数据: 取出之后在内存真正保留之前,将记录中的某个字段取出(where条件限制) 与条件进行比较: 返回结果为1就保留到内存; 否则就放弃.
+	where之前的操作都是在磁盘进行操作: where之后的所有操作都在内存.(where不能操作字段别名: 字段别名是在where之后才会生成)
+group by子句
+	分组的本意是为了统计.
+	语法规则: select * from 表名 group by 字段名;
+	分组统计: 每组只能返回一条记录(第一条记录)
+	分组的结果是为了统计: 统计函数
+		count(*/字段): 统计记录数(条数)
+		max(字段): 统计每组中最大的数据
+		min(字段): 最小结果
+		avg(字段): 分组平均值
+		sum(字段): 求和
+	分组统计原理: 在系统中模拟划分多块内存(如果分组字段不一样,存放到不同的内存中), 最后统计数据的时候在不同的分组中统计,统计完结构,分别提交(汇总)
+	count()函数统计字段的时候,只能统计不为空的字段数据
+	分组排序: 分组会自动根据group by对应的字段进行升序排序
+		group by 字段 [asc|desc];
+	多字段分组: 先根据某个字段进行分组, 然后在对已经分组的数据再次进行另外的分组
+		group by 字段1 [排序], 字段2 [排序];
+	回溯统计: 当每个被分的组最后统计的时候, 会向上一层根据分组字段进行一次新的统计
+		with rollup;
+
+
+
+1.1)增加外键
+
+-- 创建子表,使用外键#创建表的时候就增加外键
+create table student(
+	id int primary key auto_increment,
+	number char(10) not null unique comment '学号: 不能重复',
+	name varchar(10) not null comment '姓名',
+	foreign_id int,
+	-- 增加外键:foreign_id是外键字段, class是引用表(父表),id是引用字段(主键)
+	foreign key(foreign_id) references class(id)
+)charset utf8;
+
+-- 增加外键表
+create table test_foreign(
+	id int primary key auto_increment,
+	foreign_id int
+)charset utf8;
+
+-- 创建表之后增加外键
+alter table test_foreign add constraint class_foreign foreign key(foreign_id) references class
+(id);
+
+1.2）删除外键
+
+alter table test_foreign drop foreign key class_foreign;
+
+1.3）
+外键约束
+-- 增加一个带约束模式的外键
+alter table student add constraint class_student foreign key(foreign_id) 
+references class(id)
+-- 指定约束模式
+-- 更新级联
+on update cascade 
+-- 删除置空
+on delete set null;
+
+数据操作
+新增数据
+-- 插入数据：主键冲突
+insert into class values(1,'php0710','A203')
+on duplicate key -- 主键冲突
+update -- 解决方案 
+name = 'php0710',classroom='B203';
+-- 主键冲突：替换
+replace into class values(2,'php0810','A205');
+replace into class values(1,'php0710','B203');
+-- 蠕虫复制
+-- 从不同表获得数据
+insert into test_copy select * from test_case_ci;
+-- 从自己表获取数据
+insert into test_copy select * from test_copy;
+-- 高级更新: 限制更新条数
+update test_copy set name='e' where name='a';-- 更新所有符合条件的
+update test_copy set name='f' where name='b' limit 2;-- 只更新两条
+
+-- 高级删除
+delete from test_copy limit 240;
+
+高级查询
+-- 查询数据:select选项
+select * from test_copy;
+select all * from test_copy;
+select distinct * from test_copy;
+-- 字段别名
+select name ,number,foreign_id from student;
+select name as 姓名,number as 学号,foreign_id 班级主键 from student;
+数据源
+select * from class;
+select * from student;
+-- 多表数据源
+select * from student,class;
+-- 子查询
+select * from (select * from student) as s;
+
+-- where子句: 找id在区间(1,2,3)之间的学生
+select * from student where id=1 or id=2 or id=3;
+select * from student where id in (1,2,3);
+
+select * from student where id between 1 and 3;
+select * from student where height between 180 and 190;
+
+-- where使用字段别名
+select number as 学号 from student where 学号='itcast0001';-- where操作的时候别名还没有生成
+select number as 学号 from student where number='itcast0001';
+
+group by 字句
+-- 分组: 按照班级
+select * from student group by foreign_id;
+-- 分组统计
+select count(*),max(age),min(height),avg(height),sum(age),foreign_id from student group by 
+foreign_id;
+
+-- 统计(count字段)
+select count(age),count(*),foreign_id from student group by foreign_key_id;
+-- 降序排序
+select count(age),count(*),foreign_id from student group by foreign_key_id desc;
+
+-- 多字段分组
+select count(*),foreign_id,gender from student group by foreign_id,gender;
+-- 回溯统计
+select count(age),count(*),foreign_id from student group by foreign_id desc;
+select count(age),count(*),foreign_id from student group by foreign_id desc with rollup;
+
+select count(*),foreign_id,gender from student group by foreign_id,gender;
+select count(*),foreign_id,gender from student group by foreign_id,gender with rollup;

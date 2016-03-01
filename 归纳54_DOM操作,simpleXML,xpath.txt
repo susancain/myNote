@@ -1,0 +1,160 @@
+/***key***/
+DOM模型相关的三大关键词
+面、串、点
+面：开辟内存空间
+串：获取同级的兄弟节点
+点：根据相关条件，获取要操作的点
+
+PHP DOM模型查询四步走：
+第一步：开辟内存空间，形成“面”
+第二步：载入XML文档到内存，形成DOM树
+第三步：获取同级的兄弟节点，形成“串”
+第四步：根据相关条件，获取要查询的“点”
+
+PHP DOM模型增加操作五步走
+第一步：开辟内存空间，形成“面”
+第二步：载入XML数据到内存，形成DOM树结构
+第三步：创建新节点
+第四步：追加新节点到父节点
+第五步：保存内存中的数据到XML文档中
+
+PHP DOM模型删除操作六步走
+第一步：开辟内存空间，形成“面”
+第二步：载入xml文档到内存，形成DOM树结构
+第三步：找到要删除的节点
+第四步：找到其父节点
+第五步：删除操作
+第六步：保存内存中的数据到XML文档中
+
+模型修改操作几步走
+1）值修改五步走：
+第一步：开辟内存空间，形成“面”
+第二步：载入XML文档到内存，形成DOM树
+第三步：找到要修改的节点
+第四步：通过nodeValue属性修改其值
+第五步：保存内存中的数据到XML文档中
+
+2）节点修改七步走：
+第一步：开辟内存空间，形成“面”
+第二步：载入XML文档到内存，形成DOM树
+第三步：找到要修改的老节点
+第四步：创建新节点
+第五步：找到老节点的父节点
+第六步：用新节点替换老节点
+第七步：保存内存中的数据到XML文档中
+
+PHP DOM模型属性操作（增删改查）
+	属性的读取四步走
+	第一步：开辟内存空间，形成“面”
+	第二步：加载XML文档，形成DOM树
+	第三步：获取指定的元素
+	第四步：通过相关方法获取元素的属性
+
+/***interview***/
+
+例：如果想查询根元素下的子元素，必须要这样表示
+/根元素/子元素
+如果来确定Xpath语言查询的是哪个元素呢？
+答：最后一个斜杠后面跟着哪个元素，那么这个表达式查询的就是哪个元素。
+绝对路径使用技巧：必须从根元素一级一级向下查询，直到要查询的元素
+/根元素/子元素/…/要查询的元素…
+
+
+
+/***content***/
+1.PHP与XML概述
+	1）为什么需要XML解析	Java-->XML-->PHP
+	2）PHP DOM|SimpleXML
+		PHP DOM模型主要进行增删改
+		SimpleXML模型主要完成查询功能
+	3)PHP DOM
+		① 开辟内存空间
+		② 载入XML文档到内存，形成DOM树结构
+		非标准DOM树结构
+			节点值是放在节点中的
+		标准DOM树结构
+			节点值放在单独的文本节点中
+	4）三大关键词
+		面、串、点
+		开辟内存空间，形成'面'
+		获取同级兄弟节点，形成'串'
+		根据查询条件获得相应的'点'
+
+2.PHP DOM增删改查功能
+PHP DOM查询操作
+	① 开辟内存空间，形成'面'DOMDocument('1.0','utf-8');
+	② 载入xml文档到内存，形成DOM树结构load('data.xml');
+	③ 获取同级兄弟节点，形成'串'getElementsByTagName('title');
+	④ 获得点,item(index)->nodeValue
+	⑤ length获得节点数量，然后通过for循环进行遍历输出
+
+PHP DOM增加操作
+	createElement('book');
+	createElement('title','精通xml');
+	appendChild($newnode);
+	save('data.xml');
+
+PHP DOM删除操作
+获得要删除的节点$oldnode  getElementsByTagName()->item();
+获得其父节点，如果父节点是根节点，还可以通过$dom->documentElement;
+removeChild($oldnode);
+save('data.xml');
+
+PHP DOM修改操作
+值修改（只能修改节点内的值信息）
+找到要修改的节点通过nodeValue重置其值即可
+节点修改（除了可以修改节点值还可以修改节点名称）
+找到要修改的老节点
+创建新节点
+找到其父节点
+通过replaceChild进行替换
+save方法进行保存即可
+
+PHP DOM属性操作
+	hasAttribute('属性名称');判断当前元素是否具有指定属性
+	hasAttriubtes();判断当前元素是否具有属性
+	getAttribute('属性名称')
+	setAttribute('属性','值');
+
+3.SimpleXML模型
+	进行XML数据的查询操作(simplexml对象比较特殊，是一个数组和对象的混合体)
+	simplexml_load_file从文件生成simplexml对象
+	simplexml_load_string从字符串生成simplexml对象
+
+	foreach进行遍历($xml->book as $row)
+	foreach进行遍历($xml->children() as $row)
+
+	attributes()->属性名称
+
+	定义url链接
+	模拟发送get请求post请求
+	file_get_contents
+	simplexml_load_string
+
+xpath查询语言
+在xml中专门用于数据的查询操作
+绝对路径
+	/根元素/子元素/子元素/查询元素
+
+生成结果是一个数组,这个数组比较特殊，不能直接通过var_dump或print_r进行调试
+/library/book/title获取所有的title节点值然后放入$data数组中
+foreach($data as $value) {
+	echo $value;
+}
+/library/book
+foreach($data as $row) {
+	echo $row->title;
+}
+
+相对路径
+	//book
+	/library/book/*
+	//book[price>0]
+	//book[@id]
+	//要查询的元素
+	选择所有由星号之前的路径所定位的元素
+	//元素[index]，默认情况下index索引是从1开始
+	//元素[last()]，获取最后一个满足条件的元素
+	中括号中除了可以放置元素的索引外，还可以用于存放表达式
+	//元素[score<60]
+	使用@符号获取元素的属性

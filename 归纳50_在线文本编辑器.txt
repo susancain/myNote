@@ -1,0 +1,169 @@
+在线文本编辑器ckeditor
+文本编辑器都是所见即所得的在线型文本编辑器
+ewebeditor
+ueditor
+kindeditor
+fckeditor：ckeditor前身，集成了文本编辑器与文件管理器功能，开源免费
+ckeditor：文本编辑器，免费
+ckfinder：文件管理器，收费
+
+ckeditor 
+引入方式	
+	法1:通过class名称引入ckeditor
+		
+		载入ckeditor.js入口文件
+		<script src='Public/ckeditor/ckeditor.js'></script>
+		<textarea class='ckeditor' name='content'></textarea>
+
+	法二:通过定义id选择器引入ckeditor
+	
+		载入ckeditor.js入口文件
+		<head><script src='Public/ckeditor/ckeditor.js'></script></head>
+		<body>
+		<textarea id='ckeditor' name='content'></textarea>
+		通过以下语句实现ckeditor的载入
+		<script>
+			CKEDITOR.replace('ckeditor',{});
+		</script>
+		</body>
+	
+	法三:使用jquery引入ckeditor
+	1.引入jquery.js、ckeditor.js与adapters中的/jquery.js，三者导入顺序不能颠倒
+	<head>
+		<script src='Public/js/jquery.js'></script>
+		<script src='Public/ckeditor/ckeditor.js'></script>
+		<script src='Public/ckeditor/adapters/jquery.js'></script>
+	</head>
+	<body>
+	2.定义textarea文本域
+	<textarea id='ckeditor' name='content'></textarea>
+	3.使用jquery实现文本编辑器的载入
+	<script>
+		$('#ckeditor').ckeditor();
+	</script>
+	</body>
+
+ckeditor编辑器配置
+	1、使用系统配置文件（config.js）进行设置
+	在/Public/ckeditor/config.js添加以下代码：
+		//自定义配置信息
+		config.width = 500;
+		config.height = 300;
+		//更改编辑器颜色
+		config.uiColor = '#00ff00';
+
+	2、使用in-page方式进行配置(只针对第二种引入方式)
+	<h1>文本编辑器</h1>
+	<textarea id='content' name='content'></textarea>
+	<script>
+		CKEDITOR.replace('content',{
+			width:500,
+			height:300,
+			uiColor:'#ff0000'
+		});
+	</script>
+
+	3、使用自定义配置文件进行系统配置
+	① 在ckeditor文件夹下复制config.js并更名为custom.js文件
+	② 在第二种引入方式中，使用customConfig属性引入自定义custom.js文件
+	<h1>文本编辑器</h1>
+	<textarea id='content' name='content'></textarea>
+	<script>
+		CKEDITOR.replace('content',{
+			customConfig:'custom.js' //文件路径是相对ckeditor.js文件而言
+		})
+	</script>
+	③ 在/Public/ckeditor/custom.js文件中修改配置信息
+		//自定义配置信息
+		config.width = 500;
+		config.height = 300;
+		config.uiColor = '#00ff00';
+
+ckfinder使用
+① 复制ckfinder到ckeditor同级目录中
+② 使用第二种引入方式引入ckeditor并定制custom.js文件
+	<h1>文本编辑器</h1>
+	<textarea id='content' name='content'></textarea>
+	<script>
+		CKEDITOR.replace('content',{
+			customConfig:'custom.js' //文件路径是相对ckeditor.js文件而言
+		})
+	</script>
+③ 在custom.js自定义配置文件中复制如下代码：
+// 自定义配置信息（引入ckfinder）
+	config.filebrowserBrowseUrl = './Public/ckfinder/ckfinder.html'; 
+    config.filebrowserImageBrowseUrl = './Public/ckfinder/ckfinder.html?Type=Images';  
+    config.filebrowserFlashBrowseUrl = './Public/ckfinder/ckfinder.html?Type=Flash'; 
+    config.filebrowserUploadUrl = './Public/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files'; 
+    config.filebrowserImageUploadUrl = './Public/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images'; 
+    config.filebrowserFlashUploadUrl = './Public/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Flash';
+};
+
+配置成功后，自动弹出上传按钮，如未出现有两种可能：
+① 配置文件代码或路径有误
+② 浏览器进行了缓存，清理即可
+
+4、ckfinder配置
+1）文件上传权限
+	第一次上传文件时，会提示如下错误：文件不可浏览
+	修改/Public/ckfinder/config.php文件即可，修改代码如下：
+	function CheckAuthentication(){
+		return true;
+	}
+2）设置文件上传路径
+	① 在根目录下创建一个Uploads文件夹作为图片上传路径
+	② 更改Public/ckfinder/userfiles/config.php文件中的文件上传路径，代码如下：
+		//文件上传路径,路径是从根目录开始算起..
+		$baseUrl = '/Uploads/';
+3）文件重命名
+	如果文件有重名，不希望使用系统的命名规则，希望自定义命名：
+	① 找到如下文件：
+	Admin/Public/ckfinder/core/connector/php/php5/CommandHandler/FileUpload.php
+	② 打开文件创建自定义命名函数
+	//定义一个函数,用户随机生成文件名,生成规则20150921114230abcdef.后缀
+		public function getRandFilename(){
+			$fileName = date('YmdHis');
+			//生成字符从a-z
+			$str = implore('',range('a','z'));
+			//随机选取6个字符
+			for($i=0;$i<6;$i++){
+				$fileName .= $str[mt_rand(0,strlen($str-1))];
+			}
+			//返回生成后文件名称
+			return $fileName;
+		}
+	③ 在该文件添加以下两行代码
+	//更改上传文件名称,接入自定义生成随机函数
+	$sExtension = CKFinder_Connector_Utils_FileSystem::getExtension($sFileName);
+	$sFileName = getRandFileName() . '.' . $sExtension;
+	
+4）其他设置（权限配置）
+	路径:Ckfinder/userfile/config.php
+	$config['AccessControl'][] = Array(
+			'role' => '*',
+			'resourceType' => '*',
+			'folder' => '/',
+
+			'folderView' => true,
+			'folderCreate' => false,
+			'folderRename' => false,
+			'folderDelete' => false,
+
+			'fileView' => true,
+			'fileUpload' => true,
+			'fileRename' => false,
+			'fileDelete' => false);
+
+ckeditor文件接收与解析
+	由于ckeditor带有默认格式，所以在保存到数据库时一定要通过htmlspecialchars进行转义
+	1、设计数据库：文本编辑器的字段设置成text文本类型
+	2、定义deal.php文件对文本编辑器进行录入操作，录入时通过htmlspecialchars进行转义
+	例:htmlspecialchars($content);
+	3、输出时请通过htmlspecialchars_decode进行转义
+	例:htmlspecialchars_decode($row['content']);
+
+实现视频功能
+	① 在优酷、土豆等视频网站上传自定义视频
+	② 等待审核成功后，进入详细播放页面
+	③ 复制分享链接中的html代码
+	④ 在文本编辑器中的源代码中直接zhantie复制过来的html代码即可

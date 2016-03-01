@@ -1,0 +1,65 @@
+中级项目（三）
+目录
+中级项目（三）	
+一、模型	
+1、什么是模型	
+2、模型定义	
+3、编写模型	
+二、后台功能实现	
+1、在Controller文件夹中创建IndexController控制器	
+2、定义控制器继承基类控制器	
+3、定义index方法实现后台页面载入	
+4、更改index.html中的路径信息	
+5、在IndexController文件中定义top、menu、drag、main	
+6、更改top.html/menu.html/drag.html/main.html中的路径	
+7、显示登陆用户的相关信息	
+三、后台分类功能实现	
+1、更改menu.html页面中商品分类的链接地址	
+2、在Controller文件夹下创建CategoryController.class.php	
+3、定义index方法实现显示输出分类信息	
+4、创建CategoryModel模型	
+5、测试效果如下图所示：	
+四、划分项目前后台	
+1、复制一份所有文件放入Admin文件夹下	
+2、在前台模块中删除不需要的内容	
+3、更改Think.class.php注释掉权限验证功能	
+4、复制前台模板到前台View文件夹下并复制资源文件到Public文件夹下	
+5、创建IndexController.class.php前台控制器，让用户默认进入此控制器	
+6、更改index.html模板路径	
+五、前台产品模块实现	
+1、把系统中的头部和尾部进行分离成header.html模板与footer.html模板	
+2、通过include方法载入header.html与footer.html	
+3、在header.html模板中的导航位置更改链接地址	
+4、在Controller文件夹下创建ProductController.class.php	
+5、定义ProductModel模型实现对数据库文件进行操作	
+6、在控制器中调用视图显示产品	
+7、在list_product.html循环显示产品信息	
+
+
+MVC
+	Model
+	View
+	Controller
+
+Model模型：负责数据操作（与数据库的增删改查操作）
+	定义规则：
+	在Model文件夹下创建Model类，命名规则：
+		模型名称+Model.class.php
+	实例化模型类
+		$goods = new GoodsModel();
+
+划分项目的前后台：
+	Admin
+	Controller
+	Model
+	View
+
+前后台：
+	链接项目前后台就是我们的MySQL数据
+	增删改查应先开发哪里
+
+数据库的数据首先由哪里来，我们就开发哪里
+
+前后台：
+	后台：主要实现项目数据的增删改查
+	前台：数据的显示

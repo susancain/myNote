@@ -1,0 +1,44 @@
+PHP标签
+标准标记	脚本标记	短标记	ASP标记
+PHP基础语法
+变量	PHP变量的基本规则
+常量	常量规则
+注释
+
+系统变量和系统常量
+$GLOBALS
+$_SERVER
+$_GET
+$_POST
+$_REQUEST
+$_SESSION	
+$_COOKIE
+$_FILES
+$_ENV
+系统常量
+PHP_OS
+PHP_VERSION
+PHP_INT_SIZE
+PHP_INT_MAX
+魔术常量
+__FILE__
+__LINE__
+__DIR__
+__FUNCTION__
+__METHOD__
+可变变量
+变量传值	值传递	引用传值
+内存分析
+栈区	堆区	代码段	数据段
+PHP数据类型
+基本(标量)数据类型,
+分为四种: 整型, 浮点型, 布尔型和字符串型
+复合数据类型
+数组和对象
+特殊数据类型
+空类型: NULL
+资源类型: resource
+
+定界符
+Heredoc结构: 代表双引号
+Nowdoc结构: 代表单引号

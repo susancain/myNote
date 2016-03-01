@@ -1,0 +1,235 @@
+/***key***/
+常用的事件
+onload ：当页面载入完成后触发（常用于body元素）
+onblur ：失去焦点时触发
+onfocus ：获得焦点时触发
+onclick ：单击时触发
+onmouseover ：鼠标悬浮时触发
+onmouseout ：鼠标离开时触发
+onchange	：状态改变时触发（常用于select下拉选框）
+onkeydown ：键盘按下时触发
+onkeyup ：键盘弹起时触发（百度下拉搜索）
+onsubmit ：表单提交时触发（常用于form表单元素）
+
+行内绑定
+基本语法：
+<标签   属性列表    事件 =  "事件的处理程序()"/>
+在行内绑定中，其内部的this指向了全局的Window对象
+
+动态绑定中其内部的this对象指向了当前正在操作的DOM对象
+
+提出问题：我们可不可以为同一对象的同一事件绑定多个事件处理程序呢？
+答：通过行内绑定和动态绑定是不可以的，但是可以通过事件监听来实现。
+
+添加事件监听
+① 基于IE内核的浏览器（IE8以下版本、360、搜狗、2345浏览器的兼容模式）
+DOM对象.attachEvent(type,callback);
+主要功能：为某个DOM对象的某个type事件绑定相关的事件处理程序（callback）
+参数说明：
+type：事件类型，如onclick，onkeydown
+callback：事件的处理程序，通常是一个匿名函数
+② 基于W3C内核的浏览器（IE9以上版本、火狐浏览器、谷歌浏览器、国内浏览器的极速模式）
+DOM对象.addEventListener(type,callback,capture);
+主要功能：为某个DOM对象的某个type事件绑定相关的事件处理程序（callback）
+参数说明：
+type：事件类型，不带on前缀，如click、keydown
+callback：事件的处理程序，通常是一个匿名函数
+
+移除事件监听
+基于IE内核浏览器
+attachEvent(type,callback); 添加事件监听
+detachEvent(type,callback); 移除事件监听
+主要功能：在IE内核浏览器下移除事件监听程序
+参数说明：
+type：要移除的事件类型，如onclick、onmouseover
+callback：要移除事件处理程序的名称，通常是函数名称
+
+基于W3C内核浏览器
+addEventListener(type,callback,capture); 添加事件监听
+removeEventListener(type,callback); 移除事件监听
+主要功能：在W3C内核浏览器下移除事件监听程序
+参数说明：
+type：要移除的事件类型，如click、mouseover
+callback：要移出事件处理程序的名称，通常是函数名称
+
+特别说明：如果一个对象向进行事件移除，那么其绑定事件监听时事件处理程序必须是有名函数，否则是无法进行移除的，谨记！！！
+
+事件对象
+基于IE内核浏览器
+事件对象 =  window.event;
+
+基于W3C内核浏览器
+DOM对象.事件 = function(event) {
+	事件对象 = 	event;
+}
+
+
+禁止事件冒泡
+基于IE内核浏览器
+window.event.cancelBubble = true;
+基于W3C内核浏览器
+DOM对象.事件 = function(event) {
+	event.stopPropagation();
+}
+
+禁止元素的默认行为
+基于IE内核浏览器
+window.event.returnValue = false;
+基于W3C内核浏览器
+DOM对象.事件 = function(event) {
+	event.preventDefault();
+}
+
+Window对象
+•alert(message) ：弹出警告框（信息提示）
+•confirm(message) ：确认框（删除、重置时进行触发）
+•open(url[，name[，features]]) ：打开新窗口
+•print() ：打印当前窗口
+•scrollTo(x，y) ：绝对滚动
+
+Navigator对象
+•userAgent ：用户代理信息，早期用于浏览器判断
+
+Location对象
+search ：获取包括？问号在内的参数
+assign(url) ：加载url页面（相当于跳转功能）
+
+Screen对象
+height		高度
+width			宽度
+
+Document对象
+bgColor ：背景颜色
+title ：标题
+getElementById(“id”) ：通过id属性获取指定的DOM对象
+getElementsByTagName(“tagname”) ：通过标签名称获取DOM对象，返回数组
+
+
+/***content***/
+事件编程
+1、什么是事件驱动式
+在javascript中,用户的行为被js的事件捕获并执行相应的事件处理程序
+2、什么是事件处理程序
+事件发生时所执行的处理程序
+
+常用的事件
+	onload
+	onclick
+	onmouseover
+	onmouseout
+	onkeydown
+	onkeyup
+	onsubmit
+	onchange
+
+3、事件绑定
+为某个对象的某个事件绑定相关的事件处理程序
+
+行内绑定 <标签 属性列表 事件=事件的处理程序 />
+动态绑定 
+DOM对象.事件 = function() {}
+
+4、this对象
+行内绑定其内部的this指向了全局window对象
+动态绑定其内部的this指向了当前正在操作的DOM对象
+
+5、事件监听
+我们可不可以为同一对象的同一事件绑定多个事件处理程序
+通过事件监听（IE内核和W3C内核）
+	DOM对象.attachEvent(type,callback);
+		type：事件类型 'on'前缀
+		callback：事件处理程序
+	DOM对象.addEventListener(type,callback,capture);
+		type：事件类型不带'on'前缀
+		callback：事件的处理程序
+		capture：浏览器模型，布尔类型:true捕获模型,false冒泡模型
+		IE8以下版本只支持冒泡模型
+
+	function addEvent(obj,type,callback) {
+		if(obj.addEventListener) {
+			//W3C
+		} else {
+			//IE
+		}
+	}
+
+6、移除事件监听
+	IE内核
+		DOM对象.detachEvent(type,callback);
+	W3C内核
+		DOM对象.removeEventListener(type,callback);
+	如果一个对象需要移除事件，那么在添加时其事件的处理程序必须是有名函数
+
+7、事件对象
+事件发生时，系统将与事件相关的信息存储在一个对象中
+鼠标移动事件，鼠标的横纵坐标都会保存在事件对象
+键盘按下事件，系统将当前按键的键值（ASCII）存储于事件对象中
+
+IE
+window.event
+W3C
+DOM对象.事件 = function(event) {
+	event
+}
+
+if(window.event) {
+	//IE
+} else {
+	//W3C
+}
+
+8、事件冒泡
+所谓事件冒泡是指事件的响应会像水泡上升至最顶级对象
+IE
+window.event.cancelBubble = true;
+W3C
+DOM对象.事件 = function(event) {
+	event.stopPropagation();
+}
+
+9、默认行为
+有些HTML元素具有自己默认行为
+a
+submit
+IE
+window.event.returnValue = false;
+W3C
+DOM对象.事件 = function(event) {
+	event.preventDefault();
+}
+
+10、BOM模型
+当我们打开某一个web应用程序时，系统会自动生成一个对象，这个对象的最顶级对象就是Window对象，其他对象都是该对象的子对象，每个对象又拥有自己的属性和方法
+
+window
+window.print();
+window.open(url,name,params);
+window.alert();
+window.confirm();
+window.scrollTo()
+
+navigator浏览器对象
+appName
+appCodeName
+appVersion
+userAgent(IE MSIE)
+
+location对象
+window.location.href 返回当前完整路径
+window.location.assign 重新加载文档
+
+screen对象
+width
+height
+
+document对象
+title
+fgColor
+bgColor
+
+getElementById(''),获取指定id的dom对象
+getElementsByName('')  typeof
+getElementsByTagName('')  typeof
+
+
+
