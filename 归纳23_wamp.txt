@@ -1,0 +1,61 @@
+1.什么是PHP?
+一种运行在服务器端的脚本语言(超文本预处理语言)
+
+开发环境 集成环境 独立环境
+安装apache
+apache的配置文件: D:/server/apache/conf/httpd.conf
+#开启主机全名
+ServerName localhost:80
+环境变量D:\server\apache\bin
+Apache加载PHP	D:/server/apache/conf/httpd.conf
+	1.Apache加载PHP模块: LoadModule   php5_module
+	2.AddType   application/x-httpd-php   .php	   #以.php结尾的文件交给php处理
+
+PHP配置mysql
+PHP配置文件	D:/server/php/php.ini
+;PHP开启mysql扩展
+	extension=php_mysql.dll
+;指定PHP扩展所在路径
+	extension_dir = "D:/server/php/ext"
+#Apache加载PHP的配置文件
+	PHPIniDir "D:/server/php"
+;修改时区
+	date.timezone = PRC
+
+Apache主配置文件: httpd.conf需要加载虚拟主机的配置文件
+#加载虚拟主机
+	Include conf/extra/httpd-vhosts.conf
+
+虚拟主机
+#开启虚拟主机
+#NameVirtualHost *:80
+
+<VirtualHost *:80>
+	#指定文件夹所在目录
+    DocumentRoot "E:/php_test/20150710/phptext"
+	#指定别名
+    ServerName www.php0710.com
+    <Directory "E:/php_test/20150710/phptext">
+        #访问权限
+        order deny,allow
+        allow from all
+        #默认首页
+        DirectoryIndex index.php index.html index.htm
+        #是否允许列出目录结构
+        Options indexes
+    </Directory>
+</VirtualHost>
+<VirtualHost *:80>
+    DocumentRoot "D:/server/apache/htdocs"
+    ServerName localhost
+    <Directory "D:/server/apache/htdocs">
+        order deny,allow
+        allow from all
+        DirectoryIndex index.php index.html index.htm
+        Options indexes
+    </Directory>
+</VirtualHost> 
+
+hosts文件
+127.0.0.1       www.php0710.com
+127.0.0.1       localhost
