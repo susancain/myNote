@@ -304,7 +304,7 @@ title=二级页面
 4、foreach内建函数
 	主要功能：实现对数组元素的遍历
 	基本语法：
-	{foreach from=数组 item=内容 key=键 name=名称} 
+	{foreach from=数组 item=内容 key=键 name=循环的名称} 
 	数组遍历代码
 	{foreachelse} 
 	代码
